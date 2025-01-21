@@ -2,7 +2,6 @@
 <html lang="en" id="whole">
   <head>
     <!-- do not change or delete this file, it is for making the password page -->
-    <!-- in this version the 'phone' section is in the incorrect position. it should be on its own line -->
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta
@@ -19,13 +18,27 @@
   </head>
 
   <body>
+    <div class="modal">
+      <div class="modal__container">
+        <h2 class="container__title">
+          Type in the elbow sequence or the length of the piece. (ex: AABA,
+          57")
+        </h2>
+        <input id="textinput" type="text" class="container__input" />
+        <div class="container__buttons">
+          <button type="button" class="button button_cancel">Cancel</button>
+          <button type="button" class="button button_confirm">OK</button>
+        </div>
+      </div>
+    </div>
+  </div>
     <div class="form-wrapper">
       <form>
         <div class="header-container">
           <img
             class="header-logo"
             src="./img/lonestar gutter logo.svg"
-            alt=""
+            alt="logo"
           />
           <div class="date-container">
             <label for="date">Date:</label>
@@ -64,12 +77,14 @@
             <div class="tools-bar">
               <select id="tool-select">
                 <option value="gutter">Gutter</option>
-                <option value="gutter-w-screen">Gutter w/ Screen</option>
+                <!-- <option value="gutter-w-screen">Gutter w/ Screen</option> -->
                 <option value="existing-gutter">Existing Gutter</option>
                 <option value="downspout">Downspout</option>
                 <option value="drop">Drop to lower</option>
                 <option value="valley-shield">Valley Shield</option>
                 <option value="free-text">Elbow Seq/Piece Length</option>
+                <!-- <option value="flashing">Flashing</option>
+              <option value="fascia-repair">Fascia Repair/Replace</option> -->
               </select>
               <input
                 type="number"
@@ -78,6 +93,7 @@
                 id="grid-size"
                 value="14"
               />
+              <!-- <button id="color">Color</button> -->
               <select id="color">
                 <option
                   value="black"
@@ -116,10 +132,9 @@
                   Yellow
                 </option>
               </select>
-              <button type="button" class="undo-button" onclick="undo()">
-                Undo
-              </button>
+              <button type="button" class="undo-button">Undo</button>
               <button type="button" id="clear-button">Clear</button>
+              <!-- <button type="button" id="show-legend" onclick="showLegend()">LGND</button> -->
               <button type="button" id="finish-button" onclick="finish()">
                 Done
               </button>
@@ -155,6 +170,9 @@
                   id="coil-footage"
                 />
 
+                <!-- <label for="size" class="size-label">Coil Size:</label>
+              <input type="text" maxlength="100" id="size"> -->
+
                 <label for="downspout-color" class="downspout-color"
                   >DS Color/Size:</label
                 >
@@ -173,7 +191,9 @@
                   >Splash Guards:</label
                 >
                 <input type="text" name="splash-guards" id="splash-guards" />
-
+                <!-- <label for="downspout-size" class="downspout-size">DS Size:</label>
+              <input type="text" maxlength="100" id="downspout=size"> -->
+                <!-- hatest -->
                 <label for="ism" class="ism">ISM:</label>
                 <input type="text" min="0" max="99999" name="ism" id="ism" />
 
@@ -252,18 +272,25 @@
                 />
 
                 <label for="screen" id="screen-label">Screen:</label>
+                <!-- <input type="text" min="0" max="100" name="screen" id="screen"> -->
                 <textarea id="screen" rows="6"></textarea>
+
+                <!-- <label for="screen-footage">Screen Footage:</label>
+              <input min="0" max="99999" type="text" name="screen-footage" id="screen-footage"> -->
 
                 <label for="other">Gutter and Ds:</label>
                 <input type="text" name="other" id="other" placeholder="$" />
 
                 <label for="additions3" id="additions3-label">Additions:</label>
+                <!-- <input type="text" name="additions" id="additons" placeholder="$"> -->
                 <textarea rows="3" id="additions3" placeholder="$"></textarea>
 
                 <label for="additions" id="additions2-label">Additions:</label>
+                <!-- <input type="text" name="additions" id="additons" placeholder="$"> -->
                 <textarea rows="3" id="additions" placeholder="$"></textarea>
 
                 <label for="additions2" id="additions-label">Additions:</label>
+                <!-- <input type="text" name="additions" id="additons2" placeholder="$"> -->
                 <textarea rows="3" id="additions2" placeholder="$"></textarea>
 
                 <label for="total">Grand Total:</label>
@@ -273,8 +300,15 @@
           </div>
         </div>
       </form>
-    </div>
+     
 
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"
+      integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
     <script src="scripts.js"></script>
+    <script></script>
   </body>
 </html>
