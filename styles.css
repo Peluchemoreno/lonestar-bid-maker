@@ -339,7 +339,7 @@ input {
 .tools-bar select {
   border-radius: 5px;
   padding: 5px 10px;
-  background-color: silver;
+  /* background-color: silver; */
   flex-grow: 1;
   margin: auto 3px;
   max-height: 30px;
@@ -378,6 +378,19 @@ input {
   }
 }
 
+.legend {
+  /* text-align: center; */
+  padding: 10px;
+  transition: height 1s ease-in-out;
+}
+
+.legend-pic {
+  height: 160px;
+}
+
+.legend-pic.hidden {
+  height: 0px;
+}
 
 #additions,
 #additions2,
@@ -402,4 +415,28 @@ input {
   text-align: center;
   padding: 0;
   height: 25px;
+  background-color: silver;
+}
+
+.undo-button {
+  /* display: none; */
+  background-color: #d9f170;
+}
+
+.toolbar__number-input{
+  /* display: none; */
+  background-color: silver;
+}
+
+.eraser-btn {
+  background-color: silver;
+  transition: background-color .2s ease;
+}
+
+.eraser-btn_on {
+  background-color: pink;
+}
+
+button {
+  cursor: pointer;
 }

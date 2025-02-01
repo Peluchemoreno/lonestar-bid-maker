@@ -75,70 +75,73 @@
           <div class="canvas-side">
             <canvas id="canvas"></canvas>
             <div class="tools-bar">
-              <select id="tool-select">
-                <option value="gutter">Gutter</option>
-                <!-- <option value="gutter-w-screen">Gutter w/ Screen</option> -->
-                <option value="existing-gutter">Existing Gutter</option>
-                <option value="downspout">Downspout</option>
-                <option value="drop">Drop to lower</option>
-                <option value="valley-shield">Valley Shield</option>
-                <option value="free-text">Elbow Seq/Piece Length</option>
-                <!-- <option value="flashing">Flashing</option>
-              <option value="fascia-repair">Fascia Repair/Replace</option> -->
-              </select>
-              <input
-                type="number"
-                min="10"
-                max="50"
-                id="grid-size"
-                value="14"
-              />
-              <!-- <button id="color">Color</button> -->
-              <select id="color">
-                <option
-                  value="black"
-                  style="background-color: black; color: white"
-                >
-                  Black
-                </option>
-                <option value="red" style="background-color: red; color: white">
-                  Red
-                </option>
-                <option
-                  value="cyan"
-                  style="background-color: cyan; color: black"
-                >
-                  Cyan
-                </option>
-                <option
-                  value="blue"
-                  style="background-color: blue; color: white"
-                >
-                  Blue
-                </option>
-                <option
-                  value="green"
-                  style="background-color: #2efc05; color: black"
-                >
-                  Green
-                </option>
-                <option
-                  value="magenta"
-                  style="background-color: magenta; color: black"
-                >
-                  Magenta
-                </option>
-                <option value="yellow" style="background-color: yellow">
-                  Yellow
-                </option>
-              </select>
-              <button type="button" class="undo-button">Undo</button>
-              <button type="button" id="clear-button">Clear</button>
-              <!-- <button type="button" id="show-legend" onclick="showLegend()">LGND</button> -->
-              <button type="button" id="finish-button" onclick="finish()">
-                Done
-              </button>
-            </div>
+                <select id="tool-select">
+                  <option value="gutter">Gutter</option>
+                  <!-- <option value="gutter-w-screen">Gutter w/ Screen</option> -->
+                  <option value="existing-gutter">Existing Gutter</option>
+                  <option value="downspout">Downspout</option>
+                  <option value="drop">Drop to lower</option>
+                  <option value="valley-shield">Valley Shield</option>
+                  <option value="free-text">Elbow Seq/Piece Length</option>
+                  <!-- <option value="eraser">Eraser</option> -->
+                  <!-- <option value="flashing">Flashing</option>
+                <option value="fascia-repair">Fascia Repair/Replace</option> -->
+                </select>
+                <input
+                  type="number"
+                  min="10"
+                  max="50"
+                  id="grid-size"
+                  value="14"
+                  class="toolbar__number-input"
+                />
+                <!-- <button id="color">Color</button> -->
+                <button type="button" class="undo-button">Set Grid</button>
+                <select id="color">
+                  <option
+                    value="black"
+                    style="background-color: black; color: white"
+                  >
+                    Black
+                  </option>
+                  <option value="red" style="background-color: red; color: white">
+                    Red
+                  </option>
+                  <option
+                    value="cyan"
+                    style="background-color: cyan; color: black"
+                  >
+                    Cyan
+                  </option>
+                  <option
+                    value="blue"
+                    style="background-color: blue; color: white"
+                  >
+                    Blue
+                  </option>
+                  <option
+                    value="green"
+                    style="background-color: #2efc05; color: black"
+                  >
+                    Green
+                  </option>
+                  <option
+                    value="magenta"
+                    style="background-color: magenta; color: black"
+                  >
+                    Magenta
+                  </option>
+                  <option value="yellow" style="background-color: yellow">
+                    Yellow
+                  </option>
+                </select>
+  
+                <button class="eraser-btn" type="button">Eraser</button>
+                <button type="button" id="clear-button">Clear</button>
+                <button type="button" id="finish-button" onclick="finish()">
+                  Done
+                </button>
+              </div>
             <label for="job-notes" class="job-notes">
               JOB DESCRIPTION / NOTES
             </label>
