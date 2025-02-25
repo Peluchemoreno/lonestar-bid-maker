@@ -11,6 +11,90 @@ const confirmBtn = document.querySelector(".button_confirm");
 const modal = document.querySelector(".modal");
 const eraserBtn = document.querySelector(".eraser-btn");
 
+/* -------------------------------------------------------------------------- */
+/*                                     ..                                     */
+/* -------------------------------------------------------------------------- */
+
+const pricesCloseBtn = document.querySelector(".modal-prices__close-button");
+const pricesModal = document.querySelector(".modal-prices");
+const pricesCancelBtn = document.querySelector(".button_alt-cancel");
+const pricesConfirmBtn = document.querySelector(".button_alt_confirm");
+const logo = document.querySelector(".header-logo");
+const priceForm = document.querySelector("#prices-form");
+const coilSizeSelect = document.querySelector(".coil-size-select");
+const dsSizeSelect = document.querySelector(".ds-size-select");
+const materialSelect = document.getElementById("material-select");
+const gutterSelect = document.getElementById("coil-size");
+const totalInput = document.getElementById("total");
+const coilColorInput = document.getElementById("coil-color");
+const dsColorInput = document.getElementById("downspout-color");
+const materialsHeaderText = document.querySelector(
+  ".material-side-header-text"
+);
+const pricesMiscListContainer = document.querySelector(
+  ".modal-prices__body-items_misc"
+);
+const screenSelectInput = document.querySelector(".screen-choice");
+const addScreenButton = document.querySelector(".add-screen-button");
+const priceItems = document.querySelectorAll(".modal-prices__body-item");
+const screenFootageInput = document.getElementById("screen");
+const gutterDsPriceInputAlt = document.querySelector(".gutter-and-ds-input2");
+const gutterDsPriceInput = document.getElementById("other");
+const gutterDsPriceLabel = document.querySelector(".gutter-and-ds-label");
+const gutterDsPriceLabelAlt = document.querySelector(".gutter-and-ds-label2");
+
+let gutterAndDsElementIsOnBottomSection = false;
+
+const keyGutter = {
+  "price-5inKstyle": '5" K-Style',
+  "price-6inKstyle": '6" K-Style',
+  "price-7inKstyle": '7" K-Style',
+  "price-6inHR": '6" Half Round',
+  "price-8inHR": '8" Half Round',
+  "price-6inBox": '6" Box',
+  "price-5inStraight": '5" Straight Face',
+  "price-6inStraight": '6" Straight Face',
+  "price-custom": "Custom Gutter",
+};
+const keyDS = {
+  "price-2x3-corrugated": "2x3 Corrugated",
+  "price-3x4-corrugated": "3x4 Corrugated",
+  "price-4x5-corrugated": "4x5 Corrugated",
+  "price-3inRound": '3" Round',
+  "price-4inRound": '4" Round',
+  "price-3x4-smooth": "3x4 Smooth",
+  "price-ds-custom": "Custom DS",
+};
+
+const formElementsNeeded = [
+  "coil-footage",
+  "ds-footage",
+  "ism",
+  "osm",
+  "custom-miters",
+  "end-caps",
+  "a-elbows",
+  "b-elbows",
+  "splash-blocks",
+  "drip-edge",
+  "screen",
+  "screen-choice",
+  "other",
+  "additions",
+  "additions2",
+  "additions3",
+  "total",
+];
+
+const formElements = Array.from(document.querySelector("#main-form").elements);
+const filteredElements = formElements.filter((element) => {
+  return formElementsNeeded.includes(element.id);
+});
+
+/* -------------------------------------------------------------------------- */
+/*                                     ..                                     */
+/* -------------------------------------------------------------------------- */
+
 let isDrawing = false;
 let startX, startY, currentX, currentY;
 let lines = []; // Store start and end coordinates for lines
@@ -25,6 +109,35 @@ function startup() {
   canvas.height = 500;
   drawGrid();
   updateUndoButton();
+  parseMaterialOptions();
+  renderScreenItems();
+  if (gutterAndDsElementIsOnBottomSection) {
+    gutterDsPriceInput.style.display = "none";
+    gutterDsPriceLabel.style.display = "none";
+    gutterDsPriceInputAlt.style.display = "block";
+    gutterDsPriceLabelAlt.style.display = "block";
+  } else {
+    gutterDsPriceInput.style.display = "block";
+    gutterDsPriceLabel.style.display = "block";
+    gutterDsPriceInputAlt.style.display = "none";
+    gutterDsPriceLabelAlt.style.display = "none";
+  }
+}
+
+function parseMaterialOptions() {
+  Object.keys(keyGutter).forEach((key) => {
+    const element = document.createElement("option");
+    element.value = key;
+    element.innerText = keyGutter[key];
+    coilSizeSelect.appendChild(element);
+  });
+
+  Object.keys(keyDS).forEach((key) => {
+    const element = document.createElement("option");
+    element.value = key;
+    element.innerText = keyDS[key];
+    dsSizeSelect.appendChild(element);
+  });
 }
 
 // Draw the grid on the canvas
@@ -504,6 +617,110 @@ function toggleEraser(status) {
   isEraserOn = !status;
 }
 
+function savePriceInfo() {
+  priceForm.elements.forEach((element) => {
+    localStorage.setItem(element.id, element.value);
+  });
+}
+
+function sanitizeInput(input) {
+  if (input === "" || input === undefined || typeof input !== "number") {
+    return Math.round(0).toFixed(2);
+  }
+  return parseFloat(input).toFixed(2);
+}
+
+function createScreenElement(name, price) {
+  const liContainer = document.createElement("li");
+  liContainer.classList.add("modal-prices__body-item");
+
+  const label = document.createElement("label");
+  label.classList.add("item__title");
+  label.attributes.for = "testing";
+  label.textContent = name;
+
+  const divContainer = document.createElement("div");
+  divContainer.classList.add("item__price-container");
+  divContainer.innerText = "$";
+
+  const inputElement = document.createElement("input");
+  inputElement.classList.add("item__price-input");
+  inputElement.placeholder = "$0.00";
+  inputElement.type = "text";
+  inputElement.id = `price-screen-${name}`;
+
+  divContainer.appendChild(inputElement);
+  label.appendChild(divContainer);
+  liContainer.appendChild(label);
+
+  if (price) {
+    inputElement.value = price;
+  }
+
+  liContainer.ondblclick = function (e) {
+    const id = e.target
+      .querySelector(".item__price-input")
+      .id.split("price-screen-")
+      .pop();
+    const answer = window.confirm("Are you sure you want to delete this item?");
+    const arrayOfOptions = Array.from(
+      screenSelectInput.querySelectorAll("option")
+    );
+
+    if (answer) {
+      pricesMiscListContainer.removeChild(liContainer);
+
+      arrayOfOptions.filter((option) => {
+        if (option.value === id) {
+          screenSelectInput.removeChild(option);
+          localStorage.removeItem(`price-screen-${id}`);
+        }
+      });
+    }
+    calculate();
+  };
+
+  return liContainer;
+}
+
+function addElementToPricesPage(element) {
+  pricesMiscListContainer.appendChild(element);
+}
+
+function createScreenOptionElement(name) {
+  const element = document.createElement("option");
+  element.value = name;
+  element.textContent = name;
+  return element;
+}
+
+function addElementToScreenOptionsList(element) {
+  screenSelectInput.appendChild(element);
+}
+
+function addScreenItem(name, price) {
+  addElementToPricesPage(createScreenElement(name, price));
+  addElementToScreenOptionsList(createScreenOptionElement(name));
+}
+
+function populateScreenList(name) {
+  addElementToScreenOptionsList(createScreenOptionElement(name));
+}
+
+function renderScreenItems() {
+  const objKeys = Object.keys(localStorage);
+  objKeys.forEach((key) => {
+    if (key.includes("price-screen-")) {
+      const keyName = key.split("price-screen-").pop();
+
+      addElementToPricesPage(
+        createScreenElement(keyName, localStorage.getItem(key))
+      );
+      populateScreenList(keyName);
+    }
+  });
+}
+
 // Add event listeners
 canvas.addEventListener("pointerdown", startDrawing);
 canvas.addEventListener("pointermove", drawRubberLine);
@@ -520,6 +737,59 @@ cancelBtn.addEventListener("click", () => {
 
 confirmBtn.addEventListener("click", () => {
   placeText(startX, startY);
+});
+
+pricesCloseBtn.addEventListener("click", () => {
+  pricesModal.classList.remove("modal_visible");
+});
+
+pricesCancelBtn.addEventListener("click", () => {
+  pricesModal.classList.remove("modal_visible");
+});
+
+logo.addEventListener("click", () => {
+  priceForm.elements.forEach((element) => {
+    element.value = localStorage.getItem(element.id);
+  });
+  pricesModal.classList.add("modal_visible");
+});
+
+pricesConfirmBtn.addEventListener("click", () => {
+  savePriceInfo();
+  pricesModal.classList.remove("modal_visible");
+});
+
+filteredElements.forEach((element) => {
+  element.addEventListener("input", () => {
+    calculate();
+  });
+});
+
+filteredElements.forEach((element) => {
+  element.addEventListener("change", () => {
+    calculate();
+  });
+});
+
+dsSizeSelect.addEventListener("change", () => {
+  calculate();
+});
+
+gutterSelect.addEventListener("change", () => {
+  calculate();
+});
+
+materialSelect.addEventListener("change", () => {
+  calculate();
+});
+
+addScreenButton.addEventListener("click", (e) => {
+  e.preventDefault();
+  const screenName = window.prompt("What is the name of the screen?");
+  if (!screenName) {
+    return;
+  }
+  addScreenItem(screenName);
 });
 
 // Add touch events for mobile and tablets
@@ -550,11 +820,188 @@ document.addEventListener("keydown", (e) => {
   }
 });
 
+function calculateCoil(style, quantity) {
+  return localStorage.getItem(style) * quantity;
+}
+
+function calculateDownspout(style, quantity) {
+  return localStorage.getItem(style) * quantity;
+}
+
+function parseDs(size, orientation) {
+  const separated = size.split("-");
+  if (size === "price-3inRound" || size === "price-4inRound") {
+    return size + "-elbow";
+  }
+  return "price-" + separated[1] + "-" + orientation;
+}
+
+function calculate() {
+  let total = 0;
+  const config = {
+    material: materialSelect.value,
+    dsSize: dsSizeSelect.value,
+    gutterSize: gutterSelect.value,
+  };
+
+  filteredElements.forEach((element, index) => {
+    const value = document.getElementById(`${element.name}`);
+    const screenValue = document.getElementById("screen");
+
+    if (value.value) {
+      switch (value.id) {
+        case "coil-footage":
+          total += calculateCoil(config.gutterSize, parseInt(value.value));
+          break;
+        case "ds-footage":
+          total += calculateDownspout(config.dsSize, parseInt(value.value));
+          break;
+        case "ism":
+          total += localStorage.getItem("price-ism") * parseInt(value.value);
+          break;
+        case "osm":
+          total += localStorage.getItem("price-osm") * parseInt(value.value);
+          break;
+        case "custom-miters":
+          total +=
+            localStorage.getItem("price-custom-miter") * parseInt(value.value);
+          break;
+        case "end-caps":
+          // parse the end cap input for the format 3 & 3 to extract the total value
+          total += localStorage.getItem("price-endcap") * parseInt(value.value);
+          break;
+        case "a-elbows":
+          if (value.id === "price-3inRound") {
+            total +=
+              localStorage.getItem("price-3inRound-elbow") *
+              parseInt(value.value);
+          } else if (value.id === "price-4inRound") {
+            total += localStorage.getItem(
+              "price-4inRound-elbow" * parseInt(value.value)
+            );
+          } else if (config.dsSize === "price-3x4-smooth") {
+            total +=
+              localStorage.getItem("price-ds-custom-elbow") *
+              parseInt(value.value);
+          } else if (config.dsSize === "price-ds-custom") {
+            total +=
+              localStorage.getItem("price-ds-custom-elbow") *
+              parseInt(value.value);
+          } else {
+            total +=
+              localStorage.getItem(parseDs(config.dsSize, "A")) *
+              parseInt(value.value);
+          }
+          break;
+        case "b-elbows":
+          if (value.id === "price-3inRound") {
+            total += localStorage.getItem("price-3inRound-elbow");
+          } else if (value.id === "price-4inRound") {
+            total +=
+              localStorage.getItem("price-4inRound-elbow") *
+              parseInt(value.value);
+          } else if (config.dsSize === "price-3x4-smooth") {
+            total +=
+              localStorage.getItem("price-ds-custom-elbow") *
+              parseInt(value.value);
+          } else if (config.dsSize === "price-ds-custom") {
+            total +=
+              localStorage.getItem("price-ds-custom-elbow") *
+              parseInt(value.value);
+          } else {
+            total +=
+              localStorage.getItem(parseDs(config.dsSize, "B")) *
+              parseInt(value.value);
+          }
+          break;
+        case "splash-blocks":
+          total +=
+            localStorage.getItem("price-splash-blocks") * parseInt(value.value);
+          break;
+        case "drip-edge":
+          total +=
+            localStorage.getItem("price-flashing") * parseInt(value.value);
+          break;
+        case "screen-choice":
+          total +=
+            localStorage.getItem(`price-screen-${value.value}`) *
+            screenValue.value;
+          break;
+      }
+    }
+  });
+
+  if (config.material === "copper") {
+    let copperPercent = parseInt(localStorage.getItem("price-copper"));
+    total = total + total / copperPercent;
+  }
+
+  if (config.material === "galvalume") {
+    let galvalumePercent = parseInt(localStorage.getItem("price-galvalume"));
+    total = total + total / galvalumePercent;
+  }
+
+  renderTotal(total);
+  return parseInt(total);
+}
+
+function renderTotal(price) {
+  const furtherFilteredElements = filteredElements.filter((element) => {
+    if (
+      element.id === "additions2" ||
+      element.id === "additions" ||
+      element.id === "additions3" ||
+      element.id === "screen" ||
+      element.id === "drip-edge"
+    ) {
+      return element;
+    }
+  });
+
+  if (
+    furtherFilteredElements.every((element) => {
+      return !element.value;
+    })
+  ) {
+    gutterAndDsElementIsOnBottomSection = false;
+  } else {
+    gutterAndDsElementIsOnBottomSection = true;
+  }
+
+  if (gutterAndDsElementIsOnBottomSection) {
+    gutterDsPriceInput.style.display = "none";
+    gutterDsPriceLabel.style.display = "none";
+    gutterDsPriceInputAlt.style.display = "block";
+    gutterDsPriceLabelAlt.style.display = "block";
+  } else {
+    gutterDsPriceInput.style.display = "block";
+    gutterDsPriceLabel.style.display = "block";
+    gutterDsPriceInputAlt.style.display = "none";
+    gutterDsPriceLabelAlt.style.display = "none";
+  }
+
+  gutterDsPriceInputAlt.value = "$" + price.toFixed(2);
+  gutterDsPriceInput.value = "$" + price.toFixed(2);
+  totalInput.value = "$" + price.toFixed(2);
+  // also add the values from the 3 additions boxes to this total
+}
+
 function finish() {
+  // calculate();
   window.onbeforeprint = (event) => {
     toolsBar = document.querySelector(".tools-bar");
     toolsBar.style.display = "none";
     legendPic = document.querySelector(".legend-pic");
+
+    gutterSelect.style.display = "none";
+    dsSizeSelect.style.display = "none";
+    materialSelect.style.display = "none";
+    screenSelectInput.style.display = "none";
+
+    coilColorInput.value += " " + keyGutter[gutterSelect.value];
+    dsColorInput.value += " " + keyDS[dsSizeSelect.value];
+    materialsHeaderText.textContent = `MATERIAL / ${materialSelect.value.toUpperCase()}`;
+    screenFootageInput.value += " " + screenSelectInput.value;
   };
   window.print();
 }
@@ -562,4 +1009,12 @@ function finish() {
 window.onafterprint = (event) => {
   toolsBar = document.querySelector(".tools-bar");
   toolsBar.style.display = "flex";
+  gutterSelect.style.display = "block";
+  dsSizeSelect.style.display = "block";
+  materialSelect.style.display = "block";
+  screenSelectInput.style.display = "block";
+  materialsHeaderText.textContent = "MATERIAL";
+  coilColorInput.value = "";
+  dsColorInput.value = "";
+  screenFootageInput.value = "";
 };
