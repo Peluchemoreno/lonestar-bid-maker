@@ -748,7 +748,6 @@ pricesCancelBtn.addEventListener("click", () => {
 });
 
 logo.addEventListener("click", () => {
-  console.log("hello logo");
   priceForm.elements.forEach((element) => {
     element.value = localStorage.getItem(element.id);
   });
